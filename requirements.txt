@@ -1,0 +1,7 @@
+langchain
+gradio
+requests
+chromadb
+pymupdf
+unstructured[pdf]
+ollama
