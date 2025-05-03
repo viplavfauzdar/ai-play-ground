@@ -22,7 +22,7 @@ Customer Review: {review}
 Write a polite and friendly response below:
 """)
 
-llm = Ollama(model="llama3")
+llm = Ollama(model="tinyllama", base_url="http://127.0.0.1:8080")
 chain = LLMChain(llm=llm, prompt=prompt)
 
 # Function to fetch reviews from SerpAPI using data_id

@@ -1,0 +1,29 @@
+{
+  "reviews": [
+    {
+      "reviewId": "g-1234567890",
+      "reviewer": {
+        "displayName": "Jane Doe",
+        "profilePhotoUrl": "https://example.com/avatar.jpg"
+      },
+      "starRating": "FIVE",
+      "comment": "Loved the ambiance and the food was delicious!",
+      "createTime": "2024-12-01T14:35:23Z",
+      "updateTime": "2024-12-01T14:35:23Z",
+      "reviewReply": {
+        "comment": "Thanks so much for the kind words!",
+        "updateTime": "2024-12-02T10:00:00Z"
+      }
+    },
+    {
+      "reviewId": "g-9876543210",
+      "reviewer": {
+        "displayName": "John Smith"
+      },
+      "starRating": "THREE",
+      "comment": "Okay experience, but service was slow.",
+      "createTime": "2024-11-22T11:10:45Z",
+      "updateTime": "2024-11-22T11:10:45Z"
+    }
+  ]
+}

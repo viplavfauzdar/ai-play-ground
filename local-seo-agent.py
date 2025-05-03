@@ -19,18 +19,20 @@ Customer Review: {review}
 Write a polite and friendly response below:
 """)
 
-llm = Ollama(model="llama3")
+llm = Ollama(model="mistral", base_url="http://192.168.20.136:11434")
 chain = LLMChain(llm=llm, prompt=prompt)
 
 # Function to fetch reviews from SerpAPI using data_id
-def fetch_reviews_from_google(place_id, limit=10):
+def fetch_reviews_from_google(place_id, limit=1):
     search = GoogleSearch({
         "engine": "google_maps_reviews",
         "data_id": place_id,
         "api_key": os.environ.get("SERPAPI_API_KEY")
     })
     result = search.get_dict()
+    print(result)
     reviews = [r["text"] for r in result.get("reviews", [])[:limit] if "text" in r and r["text"].strip()]
+    print(reviews)
     return pd.DataFrame({"review": reviews})
 
 # Lookup function
@@ -66,7 +68,7 @@ def post_review_reply(account_id, location_id, review_id, access_token, comment)
     return response.status_code, response.json()
 
 # Async generator with progress
-def generate_responses_with_progress(file, business_type, place_id):
+def generate_responses_with_progress(file, place_id):
     import time
     if place_id:
         df = fetch_reviews_from_google(place_id)
@@ -96,7 +98,7 @@ def generate_responses_with_progress(file, business_type, place_id):
             responses.append("⚠️ No review text.")
         else:
             try:
-                response = chain.run({"review": review, "business_type": business_type})
+                response = chain.run({"review": review})
                 responses.append(response)
             except Exception:
                 responses.append("⚠️ Error generating response.")
@@ -117,7 +119,7 @@ def main_interface():
 
         with gr.Tab("Generate Responses"):
             file = gr.File(label="Upload CSV with 'review' column (optional)")
-            business_type = gr.Textbox(label="Business Type (e.g. coffee shop, dentist)")
+            #business_type = gr.Textbox(label="Business Type (e.g. coffee shop, dentist)")
             place_id = gr.Textbox(label="Google Place ID (optional – overrides CSV)")
             generate_btn = gr.Button("⚡ Generate AI Responses")
             output = gr.File(label="📥 Download CSV with AI Responses")
@@ -125,7 +127,7 @@ def main_interface():
 
             generate_btn.click(
                 fn=generate_responses_with_progress,
-                inputs=[file, business_type, place_id],
+                inputs=[file, place_id],
                 outputs=[output, status],
                 show_progress=True,
                 api_name="generate_responses_with_progress"
